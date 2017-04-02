@@ -1,6 +1,6 @@
 import { BaseRequestOptions, ConnectionBackend, Http, Response, ResponseOptions } from '@angular/http';
 import { TestBed, async } from '@angular/core/testing';
-import { MockBackend } from '@angular/http/testing';
+import { MockBackend, MockConnection } from '@angular/http/testing';
 
 import { Observable } from 'rxjs/Observable';
 
@@ -35,13 +35,24 @@ export function main() {
       let nameListService = TestBed.get(NameListService);
       let mockBackend = TestBed.get(MockBackend);
 
-      mockBackend.connections.subscribe((c: any) => {
-        c.mockRespond(new Response(new ResponseOptions({ body: '["Dijkstra", "Hopper"]' })));
+      mockBackend.connections.subscribe((connection: MockConnection) => {
+        connection.mockRespond(new Response(new ResponseOptions({ body: '["Dijkstra", "Hopper"]' })));
       });
 
       nameListService.get().subscribe((data: any) => {
         expect(data).toEqual(['Dijkstra', 'Hopper']);
       });
+    }));
+
+    it('should not resolve to list of names when error', async(() => {
+      let nameListService: NameListService = TestBed.get(NameListService);
+      let mockBackend: MockBackend = TestBed.get(MockBackend);
+
+      mockBackend.connections
+        .subscribe((connection: MockConnection) => connection.mockError(new Error('some error')));
+
+      nameListService.get()
+        .subscribe(() => fail('error is expected'), (error: String) => expect(error).toEqual('some error'));
     }));
   });
 }
