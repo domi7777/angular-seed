@@ -23,7 +23,7 @@ const config = {
   directConnect: true,
 
   capabilities: {
-    browserName: 'PhantomJS'
+    browserName: 'chrome'
   },
 
   onPrepare: function() {

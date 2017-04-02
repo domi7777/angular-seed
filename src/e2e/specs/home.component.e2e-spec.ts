@@ -16,9 +16,13 @@ describe('Home', () => {
   });
 
   it('should add a name to the list using the form', () => {
+    // Given
     element(by.css('sd-home form input')).sendKeys('Tim Berners-Lee');
-    element(by.css('sd-home form button')).click();
+    
+    // When
+    browser.executeScript('arguments[0].click()', element(by.css('sd-home form button')));
 
+    // Then
     expect(element(by.css('sd-home ul')).getText())
       .toEqual('Edsger Dijkstra\nDonald Knuth\nAlan Turing\nGrace Hopper\nTim Berners-Lee');
   });
